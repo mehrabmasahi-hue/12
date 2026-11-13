@@ -1,26 +1,43 @@
 name: Android APK
+
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 8.9
-      - uses: android-actions/setup-android@v3
-      - name: Install Android SDK components
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+          gradle-version: '8.9'
+
+      - name: Configure Android SDK
+        run: |
+          echo "ANDROID_HOME=${ANDROID_HOME:-$ANDROID_SDK_ROOT}" >> $GITHUB_ENV
+          echo "${ANDROID_HOME:-$ANDROID_SDK_ROOT}/platform-tools" >> $GITHUB_PATH
+          echo "${ANDROID_HOME:-$ANDROID_SDK_ROOT}/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          yes | sdkmanager --licenses || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
       - name: Build debug APK
-        run: gradle assembleDebug
-      - uses: actions/upload-artifact@v4
+        run: gradle assembleDebug --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: nava-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
