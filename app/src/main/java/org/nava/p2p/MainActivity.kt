@@ -123,9 +123,7 @@ class MainActivity : Activity(), PeerDiscovery.Listener, WifiDirectController.Li
                                     dialog.dismiss()
                                     AlertDialog.Builder(this)
                                         .setTitle("بخش مدیریت")
-                                        .setMessage("دسترسی تأیید شد. رمز مدیریت ثابت است و از داخل برنامه قابل تغییر نیست.
-
-تنظیمات مدیریتی در نسخه‌های بعدی اضافه می‌شوند.")
+                                        .setMessage("دسترسی تأیید شد. رمز مدیریت ثابت است و از داخل برنامه قابل تغییر نیست.\n\nتنظیمات مدیریتی در نسخه‌های بعدی اضافه می‌شوند.")
                                         .setPositiveButton("متوجه شدم", null)
                                         .show()
                                     status.text = "ورود مدیر تأیید شد"
